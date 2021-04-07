@@ -1,35 +1,54 @@
 import './App.css';
-import React, {Component, useState} from 'react';
+import React, {Component/*, useState*/} from 'react';
 import Person from './Person/Person';
 
 class App extends Component {
   state = {
     persons: [
-      {name: 'Luis', age: '21'},
-      {name: 'Gabriela', age: '22'}
+      {id: 'puppy', name: 'Luis', age: '21'},
+      {id: 'kitty', name: 'Gabriela', age: '22'}
     ],
-    otherState: 'Other value'
+    otherState: 'Other value',
+    showPersons: false
   };
 
-  switchNameHandler = (boyName) => {
-    // DON'T DO THIS: this.state.persons[0].name = 'Luis Manuel';
+  // switchNameHandler = (boyName) => {
+  //   // DON'T DO THIS: this.state.persons[0].name = 'Luis Manuel';
 
-    // Merges the old state with the new state
-    this.setState({
-      persons: [
-        {name: boyName, age: '21'},
-        {name: 'Gaby', age: '22'}
-      ]
+  //   // Merges the old state with the new state
+  //   this.setState({
+  //     persons: [
+  //       {name: boyName, age: '21'},
+  //       {name: 'Gaby', age: '22'}
+  //     ]
+  //   });
+  // };
+
+  nameChangedHandler = (event, id) => {
+    const index = this.state.persons.findIndex(person => {
+      return person.id === id;
     });
+
+    const person = {...this.state.persons[index]};
+    const persons = [...this.state.persons];
+    person.name = event.target.value;
+    persons[index] = person;
+
+    this.setState({persons: persons});
   };
 
-  nameChangedHandler = event => {
-    this.setState({
-      persons: [
-        {name: event.target.value, age: '21'},
-        {name: 'Gaby', age: '22'}
-      ]
-    });
+  togglePersonHandler = () => {
+    const show = this.state.showPersons;
+
+    this.setState({showPersons: !show});
+  };
+
+  deletePersonHandler = index => {
+    // Copying the array and not getting a reference to the array
+    const persons = [...this.state.persons];
+
+    persons.splice(index, 1);
+    this.setState({persons: persons});
   };
 
   // JSX
@@ -42,30 +61,29 @@ class App extends Component {
       cursor: 'pointer'
     };
 
+    let persons = null;
+
+    if(this.state.showPersons) {
+      persons = this.state.persons.map((person, index) => {
+        return (
+          <Person key={person.id} name={person.name} age={person.age}
+            clickEvent={this.deletePersonHandler.bind(this, index)}
+            changeEvent={event => this.nameChangedHandler(event, person.id)}/>
+        );
+      });
+    }
+
     return(
       <div className="App">
         <h1>Hi, I'm a React App!</h1>
-        <Person 
-          name={this.state.persons[0].name} 
-          age={this.state.persons[0].age}
-          // BEFORE: clickEvent={this.switchNameHandler}
-          // Way #2 to pass arguments: Not really recommended 
-          clickEvent={() => this.switchNameHandler('Pippo')}
-          changeEvent={this.nameChangedHandler}>
-            Hobbies: Playing videogames
-        </Person>
-        <Person 
-          name={this.state.persons[1].name} 
-          age={this.state.persons[1].age}>
-            Hobbies: Sewing
-        </Person>
+        {persons}
         {/* Way #1 to pass arguments: "this" controls what "this" will refer to
-        and by binding it to "this" here outside of the function, we're binding it to the
-        class. */}
+        and by binding it to "this" here outside of the function, we're binding 
+        it to the class. this.switchNameHandler.bind(this, 'Pipo')*/}
         <button 
-          onClick={this.switchNameHandler.bind(this, 'Pipo')}
+          onClick={this.togglePersonHandler}
           style={style}>
-            Switch Name
+            Show Persons
         </button>
       </div>
     );
