@@ -1,7 +1,23 @@
 import './App.css';
-import Radium, {StyleRoot} from 'radium';
+// import Radium, {StyleRoot} from 'radium';
 import Person from './Person/Person';
+import Styled from 'styled-components';
 import React, {Component/*, useState*/} from 'react';
+
+const StyledButton = Styled.button`
+  background-color: ${props => props.alt ? 'red' : 'green'};
+  color: white;
+  font: inherit;
+  border: 1px solid blue;
+  padding: 8px;
+  cursor: pointer;
+  
+  &:hover {
+      background-color: ${props => props.alt ? 'salmon' : 'lightgreen'};
+      color: black;
+  }
+`;
+
 
 class App extends Component {
   state = {
@@ -55,18 +71,18 @@ class App extends Component {
   // JSX
   render() {
     // Selectors only possible due to Radium module
-    const style = {
-      backgroundColor: 'green',
-      color: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer',
-      ':hover': {
-        backgroundColor: 'lightgreen',
-        color: 'black'
-      }
-    };
+    // const style = {
+      // backgroundColor: 'green',
+      // color: 'white',
+      // font: 'inherit',
+      // border: '1px solid blue',
+      // padding: '8px',
+      // cursor: 'pointer',
+      // ':hover': {
+      //   backgroundColor: 'lightgreen',
+      //   color: 'black'
+      // }
+    // };
 
     let persons = null;
     const classes = [];
@@ -80,11 +96,11 @@ class App extends Component {
     }
 
     if(this.state.showPersons) {
-      style.backgroundColor = 'red';
-      style[':hover'] = {
-        backgroundColor: 'lightred',
-        color: 'black'
-      };
+      // style.backgroundColor = 'red';
+      // style[':hover'] = {
+      //   backgroundColor: 'salmon',
+      //   color: 'black'
+      // };
 
       persons = this.state.persons.map((person, index) => {
         return (
@@ -97,21 +113,20 @@ class App extends Component {
 
     // StyleRoot is needed to be able to use media queries
     return(
-      <StyleRoot>
-        <div className="App">
-          <h1>Hi, I'm a React App!</h1>
-          <p className={classes.join(' ')}>This is really working!</p>
-          {persons}
-          {/* Way #1 to pass arguments: "this" controls what "this" will refer to
-          and by binding it to "this" here outside of the function, we're binding 
-          it to the class. this.switchNameHandler.bind(this, 'Pipo')*/}
-          <button 
-            onClick={this.togglePersonHandler}
-            style={style}>
-              Show Persons
-          </button>
-        </div>
-      </StyleRoot>
+      // <StyleRoot>
+      <div className="App">
+        <h1>Hi, I'm a React App!</h1>
+        <p className={classes.join(' ')}>This is really working!</p>
+        {persons}
+        {/* Way #1 to pass arguments: "this" controls what "this" will refer to
+        and by binding it to "this" here outside of the function, we're binding 
+        it to the class. this.switchNameHandler.bind(this, 'Pipo')*/}
+        <StyledButton alt={this.state.showPersons}
+          onClick={this.togglePersonHandler}>
+            Show Persons
+        </StyledButton>
+      </div>
+      // </StyleRoot>
     );
   };
 
@@ -124,8 +139,8 @@ class App extends Component {
   */
 }
 
-// export default App;
-export default Radium(App);
+export default App;
+// export default Radium(App);
 
 // React hooks, functional component with state
 /* const App = props => {
