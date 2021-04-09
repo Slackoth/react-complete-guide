@@ -1,6 +1,7 @@
 import './App.css';
-import React, {Component/*, useState*/} from 'react';
+import Radium, {StyleRoot} from 'radium';
 import Person from './Person/Person';
+import React, {Component/*, useState*/} from 'react';
 
 class App extends Component {
   state = {
@@ -53,17 +54,38 @@ class App extends Component {
 
   // JSX
   render() {
+    // Selectors only possible due to Radium module
     const style = {
-      backgroundColor: '#ffffff',
+      backgroundColor: 'green',
+      color: 'white',
       font: 'inherit',
       border: '1px solid blue',
       padding: '8px',
-      cursor: 'pointer'
+      cursor: 'pointer',
+      ':hover': {
+        backgroundColor: 'lightgreen',
+        color: 'black'
+      }
     };
 
     let persons = null;
+    const classes = [];
+
+    if(this.state.persons.length <= 2) {
+      classes.push('red');
+    }
+    
+    if(this.state.persons.length <= 1) {
+      classes.push('bold');
+    }
 
     if(this.state.showPersons) {
+      style.backgroundColor = 'red';
+      style[':hover'] = {
+        backgroundColor: 'lightred',
+        color: 'black'
+      };
+
       persons = this.state.persons.map((person, index) => {
         return (
           <Person key={person.id} name={person.name} age={person.age}
@@ -73,19 +95,23 @@ class App extends Component {
       });
     }
 
+    // StyleRoot is needed to be able to use media queries
     return(
-      <div className="App">
-        <h1>Hi, I'm a React App!</h1>
-        {persons}
-        {/* Way #1 to pass arguments: "this" controls what "this" will refer to
-        and by binding it to "this" here outside of the function, we're binding 
-        it to the class. this.switchNameHandler.bind(this, 'Pipo')*/}
-        <button 
-          onClick={this.togglePersonHandler}
-          style={style}>
-            Show Persons
-        </button>
-      </div>
+      <StyleRoot>
+        <div className="App">
+          <h1>Hi, I'm a React App!</h1>
+          <p className={classes.join(' ')}>This is really working!</p>
+          {persons}
+          {/* Way #1 to pass arguments: "this" controls what "this" will refer to
+          and by binding it to "this" here outside of the function, we're binding 
+          it to the class. this.switchNameHandler.bind(this, 'Pipo')*/}
+          <button 
+            onClick={this.togglePersonHandler}
+            style={style}>
+              Show Persons
+          </button>
+        </div>
+      </StyleRoot>
     );
   };
 
@@ -98,7 +124,8 @@ class App extends Component {
   */
 }
 
-export default App;
+// export default App;
+export default Radium(App);
 
 // React hooks, functional component with state
 /* const App = props => {
