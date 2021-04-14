@@ -1,23 +1,7 @@
-import './App.css';
-// import Radium, {StyleRoot} from 'radium';
 import Person from './Person/Person';
-import Styled from 'styled-components';
+import AppStyles from './App.module.css';
 import React, {Component/*, useState*/} from 'react';
-
-const StyledButton = Styled.button`
-  background-color: ${props => props.alt ? 'red' : 'green'};
-  color: white;
-  font: inherit;
-  border: 1px solid blue;
-  padding: 8px;
-  cursor: pointer;
-  
-  &:hover {
-      background-color: ${props => props.alt ? 'salmon' : 'lightgreen'};
-      color: black;
-  }
-`;
-
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 
 class App extends Component {
   state = {
@@ -70,63 +54,46 @@ class App extends Component {
 
   // JSX
   render() {
-    // Selectors only possible due to Radium module
-    // const style = {
-      // backgroundColor: 'green',
-      // color: 'white',
-      // font: 'inherit',
-      // border: '1px solid blue',
-      // padding: '8px',
-      // cursor: 'pointer',
-      // ':hover': {
-      //   backgroundColor: 'lightgreen',
-      //   color: 'black'
-      // }
-    // };
-
     let persons = null;
-    const classes = [];
+    let btnClass = '';
+    const pClass = [];
 
     if(this.state.persons.length <= 2) {
-      classes.push('red');
+      pClass.push(AppStyles.ColorRed);
     }
     
     if(this.state.persons.length <= 1) {
-      classes.push('bold');
+      pClass.push(AppStyles.BoldFont);
     }
 
     if(this.state.showPersons) {
-      // style.backgroundColor = 'red';
-      // style[':hover'] = {
-      //   backgroundColor: 'salmon',
-      //   color: 'black'
-      // };
+      btnClass = AppStyles.Red;
 
       persons = this.state.persons.map((person, index) => {
         return (
-          <Person key={person.id} name={person.name} age={person.age}
-            clickEvent={this.deletePersonHandler.bind(this, index)}
-            changeEvent={event => this.nameChangedHandler(event, person.id)}/>
+          // The key always needs to be on the outer element in a map method
+          <ErrorBoundary key={person.id}>
+            <Person name={person.name} age={person.age}
+              clickEvent={this.deletePersonHandler.bind(this, index)}
+              changeEvent={event => this.nameChangedHandler(event, person.id)}/>
+          </ErrorBoundary>
         );
       });
     }
 
-    // StyleRoot is needed to be able to use media queries
     return(
-      // <StyleRoot>
-      <div className="App">
+      <div className={AppStyles.App}>
         <h1>Hi, I'm a React App!</h1>
-        <p className={classes.join(' ')}>This is really working!</p>
+        <p className={pClass.join(' ')}>This is really working!</p>
         {persons}
         {/* Way #1 to pass arguments: "this" controls what "this" will refer to
         and by binding it to "this" here outside of the function, we're binding 
         it to the class. this.switchNameHandler.bind(this, 'Pipo')*/}
-        <StyledButton alt={this.state.showPersons}
+        <button className={btnClass} alt={this.state.showPersons ? 1 : 0}
           onClick={this.togglePersonHandler}>
             Show Persons
-        </StyledButton>
+        </button>
       </div>
-      // </StyleRoot>
     );
   };
 
@@ -140,7 +107,6 @@ class App extends Component {
 }
 
 export default App;
-// export default Radium(App);
 
 // React hooks, functional component with state
 /* const App = props => {
