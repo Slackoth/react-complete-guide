@@ -5,6 +5,8 @@ import BurgerIngStyle from './BurgerIngredient.module.css';
 class BurgerIngredient extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {};
     }
 
     getIngredient = () => {

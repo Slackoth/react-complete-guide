@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
-import Toolbar from '../Navigation/Toolbar';
-import AuxWrapper from '../../hoc/AuxWrapper';
 import LayoutStyle from './Layout.module.css';
-import SideDrawer from '../Navigation/SideDrawer/SideDrawer';
+import AuxWrapper from '../AuxWrapper/AuxWrapper';
+import Toolbar from '../../components/Navigation/Toolbar';
+import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
 
 class Layout extends Component {
     constructor(props) {
         super(props)
+        
         this.state = {
             openSideDrawer: false
         };
