@@ -2,9 +2,7 @@ import './ExpenseForm.css';
 import React, {useState} from 'react';
 
 const ExpenseForm = props => {
-    const [state, setState] = useState({
-        title: '', amount: '', date: ''
-    });
+    const [state, setState] = useState({date: '', title: '', amount: ''});
 
     const titleOnChangeHandler = event => {
         setState(prevState => {
@@ -28,9 +26,19 @@ const ExpenseForm = props => {
         // Prevents page reloading
         event.preventDefault();
         
-        const data = {...state, date: new Date(state.date)};
+        const data = {
+            ...state,
+            date: new Date(state.date),
+            // Convert it to number
+            amount: +state.amount
+        };
 
         props.onSubmitExpense(data);
+        cancelFormHanlder();
+    };
+
+    const cancelFormHanlder = () => {
+        props.onCancelExpense();
         setState({title: '', amount: '', date: ''});
     };
 
@@ -54,6 +62,7 @@ const ExpenseForm = props => {
                 </div>
             </div>
             <div className='new-expense__actions'>
+                <button type='button' onClick={cancelFormHanlder}>Cancel</button>
                 <button type='submit'>Add Expense</button>
             </div>
         </form>
