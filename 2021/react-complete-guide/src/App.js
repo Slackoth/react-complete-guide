@@ -1,4 +1,5 @@
 import './App.css';
+import NewExpense from './components/NewExpense/NewExpense';
 import ExpenseItems from './components/ExpenseItems/ExpenseItems';
 
 const App = () => {
@@ -8,8 +9,13 @@ const App = () => {
       {date: new Date(2021, 4, 28), title: 'PC insurance', amount: 475.75}
     ];
 
+    const newExpenseHandler = expense => {
+        console.log(expense);
+    };
+
     return (
         <div className="App">
+            <NewExpense onNewExpense={newExpenseHandler}/>
             <ExpenseItems expenses={expenses}/>
         </div>
     );
