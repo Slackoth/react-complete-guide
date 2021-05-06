@@ -14,10 +14,10 @@ function App() {
   };
 
   return (
-    <div>
+    <React.Fragment>
       <NewUser onNewUser={newUserHandler}/>
       <Users users={state}/>
-    </div>
+    </React.Fragment>
   );
 }
 
