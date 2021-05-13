@@ -5,21 +5,22 @@ import CartIcon from '../../../Cart/CartIcon/CartIcon';
 const CartButton = props => {
     const [highligthed, setHighlighted] = useState(false);
     const btnStyles = `${Styles.button} ${highligthed ? Styles.bump : ''}`;
+    const amountItems = props.amountItems;
 
     useEffect(() => {
-        if(props.amountItems > 0)
+        if(amountItems > 0)
             setHighlighted(true)
         
         const timer = setTimeout(() => setHighlighted(false), 300);
         
         return () => clearTimeout(timer);
-    }, [props.amountItems]);
+    }, [amountItems]);
 
     return <button className={btnStyles} onClick={props.onClick}>
         <span className={Styles.icon}><CartIcon/></span>
         <span>Your Cart</span>
         <span className={Styles.badge}>
-            {props.amountItems}
+            {amountItems}
         </span>
     </button>
 };
