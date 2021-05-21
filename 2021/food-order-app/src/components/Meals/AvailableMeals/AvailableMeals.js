@@ -1,50 +1,59 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Card from '../../UI/Card/Card';
 import MealItem from '../MealItem/MealItem';
 import Styles from './AvailableMeals.module.css';
 
-const DUMMY_MEALS = [
-    {
-      id: 'm1',
-      name: 'Sushi',
-      description: 'Finest fish and veggies',
-      price: 22.99,
-    },
-    {
-      id: 'm2',
-      name: 'Schnitzel',
-      description: 'A german specialty!',
-      price: 16.5,
-    },
-    {
-      id: 'm3',
-      name: 'Barbecue Burger',
-      description: 'American, raw, meaty',
-      price: 12.99,
-    },
-    {
-      id: 'm4',
-      name: 'Green Bowl',
-      description: 'Healthy...and green...',
-      price: 18.99,
-    },
-];
-
 const AvailableMeals = props => {
+    const [meals, setMeals] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const fetchMeals = useCallback(async () => {
+      const response = await fetch('https://react-http-689f4-default-rtdb.firebaseio.com/meals.json');
+      const data = await response.json();
+
+      if(!response.ok)
+        throw new Error('Something went wrong...');
+
+      const meals = [];
+      
+      for(let key in data) {
+        let meal = data[key];
+
+        meals.push({...meal, id: key});
+      }
+
+      setMeals(meals)
+    }, []);
+
+    // Will only run on the first rendering!
+    useEffect(() => {
+      // Cannot use await keyword in useEffect
+      fetchMeals().catch(error => setError(error.message));
+      setIsLoading(false);
+    }, [fetchMeals]);
+
     const toAvailableMeals = () => {
-        return DUMMY_MEALS.map(meal => {
+        return meals.map(meal => {
             return <MealItem key={meal.id} name={meal.name} id={meal.id}
               description={meal.description} price={meal.price}/>;
         });
     }
 
-    return (
-      <section className={Styles.meals}>
-        <Card>
-          <ul>{toAvailableMeals()}</ul>
-        </Card>
-      </section>
-    )
+    const showAvailableMeals = () => {
+      let loading = (<section className={Styles['meals-loading']}>
+        <p>Loading...</p></section>);
+      
+      return isLoading ? loading : 
+      (<section className={Styles.meals}>
+        <Card>{toAvailableMeals()}</Card>
+      </section>);
+    };
+
+    if(error)
+      return <section className={Styles['meals-error']}><p>Something went wrong...</p></section>;
+    else 
+      return showAvailableMeals();
 };
 
 export default AvailableMeals;
